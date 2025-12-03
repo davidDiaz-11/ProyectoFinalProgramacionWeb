@@ -16,6 +16,7 @@ router.post("/", async (req, res) => {
             <img src="cid:logoempresa" width="150"/>
 
             <h2 style="color:#4CAF50;">¡Bienvenido a UrbanFit Store!</h2>
+            <p>Estilo que te mueve.</p>
             <p>Gracias por suscribirte.</p>
 
             <h3 style="margin-top:20px;">Tu cupón de descuento</h3>

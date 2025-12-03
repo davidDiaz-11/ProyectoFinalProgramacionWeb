@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
         <div style="text-align:center;">
           <img src="cid:logoempresa" width="150"/>
           <h2 style="color:#4CAF50;">UrbanFit Store</h2>
-          <p>"Calidad que llega a tu hogar"</p>
+          <p>"Estilo que te mueve."</p>
         </div>
 
         <p>Hola <strong>${name}</strong>,</p>
