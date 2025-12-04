@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
 
     // Enviar correo al usuario
     await sendEmail({
-      to: email,
+      to: "al347754@edu.uaa.mx",
       subject: "📩 Hemos recibido tu mensaje",
       html: htmlContent,
     });
