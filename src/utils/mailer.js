@@ -1,17 +1,24 @@
 const axios = require("axios");
 
-async function sendEmail({ to, subject, html }) {
+async function sendEmail({ to, subject, html, attachments = [] }) {
   try {
+    // Convertir attachments a formato Brevo
+    const brevoAttachments = attachments.map((att) => ({
+      name: att.filename,
+      content: att.content.toString("base64"), // PDF en base64
+    }));
+
     const response = await axios.post(
       "https://api.brevo.com/v3/smtp/email",
       {
         sender: {
-          email: process.env.EMAIL_FROM,
+          email: "diazdavid3477@gmail.com", // remitente verificado en Brevo
           name: "UrbanFit Store",
         },
         to: [{ email: to }],
         subject,
         htmlContent: html,
+        attachment: brevoAttachments, // 👈 AQUÍ SE ENVIAN LOS PDF
       },
       {
         headers: {

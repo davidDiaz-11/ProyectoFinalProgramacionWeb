@@ -2,8 +2,10 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userModel");
-const nodemailer = require("nodemailer");
 const pool = require("../config/db");
+const { sendEmail } = require("../utils/mailer");
+
+
 
 const BLOCK_MINUTES = parseInt(process.env.BLOCK_MINUTES || "5", 10);
 
@@ -163,55 +165,49 @@ const AuthController = {
     }
   },
 
-  // ----------------------------------
-  // RECUPERAR CONTRASEÑA
-  // ----------------------------------
-  async recover(req, res) {
-    try {
-      const { email } = req.body;
+// ----------------------------------
+// RECUPERAR CONTRASEÑA (Brevo)
+// ----------------------------------
+async recover(req, res) {
+  try {
+    const { email } = req.body;
 
-      const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [
-        email,
-      ]);
+    const [rows] = await pool.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
 
-      if (rows.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "No existe una cuenta con ese correo" });
-      }
+    if (rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No existe una cuenta con ese correo" });
+    }
 
-      const user = rows[0];
+    const user = rows[0];
+    const realPassword = user.password_plain; // contraseña original
 
-      const realPassword = user.password_plain;
-
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "coinmaster150704@gmail.com",
-          pass: "otygsninezcbelku",
-        },
-      });
-
-      await transporter.sendMail({
-        from: "UrbanFit Store",
-        to: email,
-        subject: "Recuperación de contraseña",
-        html: `
+    const html = `
       <h2>Recuperación de Contraseña</h2>
       <p>Hola ${user.name},</p>
-      <p>Tu contraseña es:</p>
+      <p>Tu contraseña actual es:</p>
       <h3>${realPassword}</h3>
-      <p>Por favor inicia sesión cuando gustes.</p>
-    `,
-      });
+      <p>Se recomienda cambiarla si no fuiste tú quien la solicitó.</p>
+    `;
 
+    await sendEmail({
+      to: email,
+      subject: "📩 Recuperación de Contraseña",
+      html
+    });
 
-      res.json({ message: "Contraseña temporal enviada al correo" });
-    } catch (err) {
-      console.error("Error recover:", err);
-      res.status(500).json({ message: "Error enviando correo" });
-    }
-  },
+    return res.json({ message: "La contraseña fue enviada a tu correo" });
+
+  } catch (err) {
+    console.error("Error recover:", err);
+    return res.status(500).json({ message: "Error enviando correo" });
+  }
+},
+
 };
 
 module.exports = AuthController;

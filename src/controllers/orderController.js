@@ -186,15 +186,14 @@ const OrderController = {
         to: req.user.email,
         subject: "Tu compra en UrbanFit Store",
         html: `
-  <h2>Gracias por tu compra en UrbanFit Store</h2>
-  <p>Adjuntamos tu nota de compra en formato PDF.</p>
-  <p>Total: <strong>$${total.toFixed(2)}</strong></p>
-`,
+    <h2>Gracias por tu compra en UrbanFit Store</h2>
+    <p>Adjuntamos tu nota de compra en formato PDF.</p>
+    <p>Total: <strong>$${total.toFixed(2)}</strong></p>
+  `,
         attachments: [
           {
             filename: `orden-${orderId}.pdf`,
-            content: pdfPath, // 👈 AQUÍ VA EL BUFFER
-            contentType: "application/pdf",
+            content: pdfPath, // buffer -> lo convertimos en mailer.js
           },
         ],
       });
