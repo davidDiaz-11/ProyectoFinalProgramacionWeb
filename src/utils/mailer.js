@@ -1,22 +1,30 @@
-// src/utils/mailer.js
-const { Resend } = require("resend");
+const axios = require("axios");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-async function sendEmail({ to, subject, html, text }) {
+async function sendEmail({ to, subject, html }) {
   try {
-    const data = await resend.emails.send({
-      from: process.env.EMAIL_FROM, // ej: "UrbanFit Store <noreply@algo.com>"
-      to,
-      subject,
-      html,
-      text,
-    });
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: { email: process.env.EMAIL_FROM || "urbanfit@brevo.com" },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    console.log("📨 Email enviado:", data.id || data);
-    return data;
+    console.log("📨 Email enviado vía Brevo:", response.data);
+    return response.data;
   } catch (err) {
-    console.error("❌ Error enviando correo:", err);
+    console.error(
+      "❌ Error enviando correo (Brevo):",
+      err.response?.data || err
+    );
     throw err;
   }
 }
