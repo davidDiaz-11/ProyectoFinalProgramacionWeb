@@ -1,32 +1,20 @@
-const nodemailer = require("nodemailer");
+// src/utils/mailer.js
+const { Resend } = require("resend");
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false, // 👈 NECESARIO EN RAILWAY
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-
-async function sendEmail({ to, subject, text, html, attachments = [] }) {
+async function sendEmail({ to, subject, html, text }) {
   try {
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    const data = await resend.emails.send({
+      from: process.env.EMAIL_FROM, // ej: "UrbanFit Store <noreply@algo.com>"
       to,
       subject,
-      text,
       html,
-      attachments,
+      text,
     });
 
-    console.log("📨 Email enviado:", info.messageId);
-    return info;
+    console.log("📨 Email enviado:", data.id || data);
+    return data;
   } catch (err) {
     console.error("❌ Error enviando correo:", err);
     throw err;
