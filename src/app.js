@@ -15,7 +15,13 @@ const contactRoutes = require("./routes/contactRoutes");
 const subscribeRoutes = require("./routes/subscribeRoutes");
 
 // Middlewares globales
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 
 // Rutas
