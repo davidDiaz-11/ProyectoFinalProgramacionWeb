@@ -5,7 +5,10 @@ async function sendEmail({ to, subject, html }) {
     const response = await axios.post(
       "https://api.brevo.com/v3/smtp/email",
       {
-        sender: { email: process.env.EMAIL_FROM || "urbanfit@brevo.com" },
+        sender: {
+          email: process.env.EMAIL_FROM,
+          name: "UrbanFit Store",
+        },
         to: [{ email: to }],
         subject,
         htmlContent: html,
