@@ -1,10 +1,11 @@
 const axios = require("axios");
+const fs = require("fs");
 
 async function sendEmail({ to, subject, html, attachments }) {
   try {
     const payload = {
       sender: {
-        email: "diazdavid3477@gmail.com", // remitente verificado
+        email: "diazdavid3477@gmail.com",
         name: "UrbanFit Store",
       },
       to: [{ email: to }],
@@ -12,12 +13,16 @@ async function sendEmail({ to, subject, html, attachments }) {
       htmlContent: html,
     };
 
-    // Solo agregar attachments si existen
+    // Adjuntar archivos correctamente
     if (attachments && attachments.length > 0) {
-      payload.attachment = attachments.map((att) => ({
-        name: att.filename,
-        content: att.content.toString("base64"),
-      }));
+      payload.attachment = attachments.map((att) => {
+        const fileContent = fs.readFileSync(att.path); // Leer archivo PURO
+
+        return {
+          name: att.filename,
+          content: fileContent.toString("base64"),
+        };
+      });
     }
 
     const response = await axios.post(
