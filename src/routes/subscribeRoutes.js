@@ -34,6 +34,7 @@ router.post("/", async (req, res) => {
       </div>
     `;
 
+    console.log("EMAIL DE SUSCRIPCION:", email);
     await sendEmail({
       to: email,
       subject: "Tu cupón exclusivo de UrbanFit Store",
@@ -43,6 +44,7 @@ router.post("/", async (req, res) => {
     res.json({ message: "Cupón enviado a tu correo" });
   } catch (error) {
     console.error("Error enviando cupón:", error);
+    console.error("❌ ERROR SUSCRIPCION:", error.response?.data || error);
     res.status(500).json({ message: "Error al enviar cupón" });
   }
 });

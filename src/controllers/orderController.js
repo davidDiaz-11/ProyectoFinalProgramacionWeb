@@ -193,7 +193,7 @@ const OrderController = {
         attachments: [
           {
             filename: `orden-${orderId}.pdf`,
-            content: pdfPath, // buffer -> lo convertimos en mailer.js
+            buffer: pdfPath, // buffer -> lo convertimos en mailer.js
           },
         ],
       });
