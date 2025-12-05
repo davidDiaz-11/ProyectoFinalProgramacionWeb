@@ -5,7 +5,7 @@ async function sendEmail({ to, subject, html, attachments }) {
   try {
     const payload = {
       sender: {
-        email: "diazdavid3477@gmail.com",
+        email: "no-reply@brevo.com",
         name: "UrbanFit Store",
       },
       to: [{ email: to }],
